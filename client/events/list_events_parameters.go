@@ -87,6 +87,11 @@ type ListEventsParams struct {
 
 	*/
 	Before *string
+	/*EventType
+	  Filter events by a prefix match on the event type (e.g. "user.image.")
+
+	*/
+	EventType *string
 	/*Level
 	  Filter events by the level - INFO or ERROR
 
@@ -180,6 +185,17 @@ func (o *ListEventsParams) WithBefore(before *string) *ListEventsParams {
 // SetBefore adds the before to the list events params
 func (o *ListEventsParams) SetBefore(before *string) {
 	o.Before = before
+}
+
+// WithEventType adds the eventType to the list events params
+func (o *ListEventsParams) WithEventType(eventType *string) *ListEventsParams {
+	o.SetEventType(eventType)
+	return o
+}
+
+// SetEventType adds the eventType to the list events params
+func (o *ListEventsParams) SetEventType(eventType *string) {
+	o.EventType = eventType
 }
 
 // WithLevel adds the level to the list events params
@@ -299,6 +315,22 @@ func (o *ListEventsParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Re
 		qBefore := qrBefore
 		if qBefore != "" {
 			if err := r.SetQueryParam("before", qBefore); err != nil {
+				return err
+			}
+		}
+
+	}
+
+	if o.EventType != nil {
+
+		// query param event_type
+		var qrEventType string
+		if o.EventType != nil {
+			qrEventType = *o.EventType
+		}
+		qEventType := qrEventType
+		if qEventType != "" {
+			if err := r.SetQueryParam("event_type", qEventType); err != nil {
 				return err
 			}
 		}

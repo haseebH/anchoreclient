@@ -28,7 +28,7 @@ import (
 	"github.com/haseebh/anchoreclient/client/vulnerabilities"
 )
 
-// Default anchore engine API server HTTP client.
+// Default anchoreclient HTTP client.
 var Default = NewHTTPClient(nil)
 
 const (
@@ -43,14 +43,14 @@ const (
 // DefaultSchemes are the default schemes found in Meta (info) section of spec file
 var DefaultSchemes = []string{"http", "https"}
 
-// NewHTTPClient creates a new anchore engine API server HTTP client.
-func NewHTTPClient(formats strfmt.Registry) *AnchoreEngineAPIServer {
+// NewHTTPClient creates a new anchoreclient HTTP client.
+func NewHTTPClient(formats strfmt.Registry) *Anchoreclient {
 	return NewHTTPClientWithConfig(formats, nil)
 }
 
-// NewHTTPClientWithConfig creates a new anchore engine API server HTTP client,
+// NewHTTPClientWithConfig creates a new anchoreclient HTTP client,
 // using a customizable transport config.
-func NewHTTPClientWithConfig(formats strfmt.Registry, cfg *TransportConfig) *AnchoreEngineAPIServer {
+func NewHTTPClientWithConfig(formats strfmt.Registry, cfg *TransportConfig) *Anchoreclient {
 	// ensure nullable parameters have default
 	if cfg == nil {
 		cfg = DefaultTransportConfig()
@@ -61,14 +61,14 @@ func NewHTTPClientWithConfig(formats strfmt.Registry, cfg *TransportConfig) *Anc
 	return New(transport, formats)
 }
 
-// New creates a new anchore engine API server client
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *AnchoreEngineAPIServer {
+// New creates a new anchoreclient client
+func New(transport runtime.ClientTransport, formats strfmt.Registry) *Anchoreclient {
 	// ensure nullable parameters have default
 	if formats == nil {
 		formats = strfmt.Default
 	}
 
-	cli := new(AnchoreEngineAPIServer)
+	cli := new(Anchoreclient)
 	cli.Transport = transport
 
 	cli.Archives = archives.New(transport, formats)
@@ -143,8 +143,8 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 	return cfg
 }
 
-// AnchoreEngineAPIServer is a client for anchore engine API server
-type AnchoreEngineAPIServer struct {
+// Anchoreclient is a client for anchoreclient
+type Anchoreclient struct {
 	Archives *archives.Client
 
 	Events *events.Client
@@ -179,7 +179,7 @@ type AnchoreEngineAPIServer struct {
 }
 
 // SetTransport changes the transport on the client and all its subresources
-func (c *AnchoreEngineAPIServer) SetTransport(transport runtime.ClientTransport) {
+func (c *Anchoreclient) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
 
 	c.Archives.SetTransport(transport)

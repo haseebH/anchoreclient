@@ -88,12 +88,17 @@ type QueryVulnerabilitiesParams struct {
 	  The ID of the vulnerability (e.g. CVE-1999-0001)
 
 	*/
-	ID string
+	ID []string
 	/*Limit
 	  Limit the number of records for the requested page. If omitted or set to 0, return all results in a single page
 
 	*/
 	Limit *int64
+	/*Namespace
+	  Namespace(s) to filter vulnerability records by
+
+	*/
+	Namespace []string
 	/*Page
 	  The page of results to fetch. Pages start at 1
 
@@ -161,13 +166,13 @@ func (o *QueryVulnerabilitiesParams) SetAffectedPackageVersion(affectedPackageVe
 }
 
 // WithID adds the id to the query vulnerabilities params
-func (o *QueryVulnerabilitiesParams) WithID(id string) *QueryVulnerabilitiesParams {
+func (o *QueryVulnerabilitiesParams) WithID(id []string) *QueryVulnerabilitiesParams {
 	o.SetID(id)
 	return o
 }
 
 // SetID adds the id to the query vulnerabilities params
-func (o *QueryVulnerabilitiesParams) SetID(id string) {
+func (o *QueryVulnerabilitiesParams) SetID(id []string) {
 	o.ID = id
 }
 
@@ -180,6 +185,17 @@ func (o *QueryVulnerabilitiesParams) WithLimit(limit *int64) *QueryVulnerabiliti
 // SetLimit adds the limit to the query vulnerabilities params
 func (o *QueryVulnerabilitiesParams) SetLimit(limit *int64) {
 	o.Limit = limit
+}
+
+// WithNamespace adds the namespace to the query vulnerabilities params
+func (o *QueryVulnerabilitiesParams) WithNamespace(namespace []string) *QueryVulnerabilitiesParams {
+	o.SetNamespace(namespace)
+	return o
+}
+
+// SetNamespace adds the namespace to the query vulnerabilities params
+func (o *QueryVulnerabilitiesParams) SetNamespace(namespace []string) {
+	o.Namespace = namespace
 }
 
 // WithPage adds the page to the query vulnerabilities params
@@ -233,13 +249,12 @@ func (o *QueryVulnerabilitiesParams) WriteToRequest(r runtime.ClientRequest, reg
 
 	}
 
-	// query param id
-	qrID := o.ID
-	qID := qrID
-	if qID != "" {
-		if err := r.SetQueryParam("id", qID); err != nil {
-			return err
-		}
+	valuesID := o.ID
+
+	joinedID := swag.JoinByFormat(valuesID, "")
+	// query array param id
+	if err := r.SetQueryParam("id", joinedID...); err != nil {
+		return err
 	}
 
 	if o.Limit != nil {
@@ -256,6 +271,14 @@ func (o *QueryVulnerabilitiesParams) WriteToRequest(r runtime.ClientRequest, reg
 			}
 		}
 
+	}
+
+	valuesNamespace := o.Namespace
+
+	joinedNamespace := swag.JoinByFormat(valuesNamespace, "")
+	// query array param namespace
+	if err := r.SetQueryParam("namespace", joinedNamespace...); err != nil {
+		return err
 	}
 
 	if o.Page != nil {

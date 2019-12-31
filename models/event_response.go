@@ -99,6 +99,9 @@ func (m *EventResponse) UnmarshalBinary(b []byte) error {
 // swagger:model EventResponseEvent
 type EventResponseEvent struct {
 
+	// category
+	Category string `json:"category,omitempty"`
+
 	// details
 	Details interface{} `json:"details,omitempty"`
 

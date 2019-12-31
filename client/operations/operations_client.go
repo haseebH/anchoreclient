@@ -97,6 +97,111 @@ func (a *Client) HealthNoop(params *HealthNoopParams, authInfo runtime.ClientAut
 }
 
 /*
+ListFileContentSearchResults returns a list of analyzer artifacts of the specified type
+*/
+func (a *Client) ListFileContentSearchResults(params *ListFileContentSearchResultsParams, authInfo runtime.ClientAuthInfoWriter) (*ListFileContentSearchResultsOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewListFileContentSearchResultsParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "list_file_content_search_results",
+		Method:             "GET",
+		PathPattern:        "/images/{imageDigest}/artifacts/file_content_search",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &ListFileContentSearchResultsReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*ListFileContentSearchResultsOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for list_file_content_search_results: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+ListRetrievedFiles returns a list of analyzer artifacts of the specified type
+*/
+func (a *Client) ListRetrievedFiles(params *ListRetrievedFilesParams, authInfo runtime.ClientAuthInfoWriter) (*ListRetrievedFilesOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewListRetrievedFilesParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "list_retrieved_files",
+		Method:             "GET",
+		PathPattern:        "/images/{imageDigest}/artifacts/retrieved_files",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &ListRetrievedFilesReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*ListRetrievedFilesOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for list_retrieved_files: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+ListSecretSearchResults returns a list of analyzer artifacts of the specified type
+*/
+func (a *Client) ListSecretSearchResults(params *ListSecretSearchResultsParams, authInfo runtime.ClientAuthInfoWriter) (*ListSecretSearchResultsOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewListSecretSearchResultsParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "list_secret_search_results",
+		Method:             "GET",
+		PathPattern:        "/images/{imageDigest}/artifacts/secret_search",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &ListSecretSearchResultsReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*ListSecretSearchResultsOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for list_secret_search_results: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
 Ping Simple status check
 */
 func (a *Client) Ping(params *PingParams, authInfo runtime.ClientAuthInfoWriter) (*PingOK, error) {
