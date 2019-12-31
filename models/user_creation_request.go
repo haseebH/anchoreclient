@@ -24,7 +24,7 @@ type UserCreationRequest struct {
 
 	// The username to create
 	// Required: true
-	// Pattern: ^[a-zA-Z0-9][a-zA-Z0-9_-]{1,126}[a-zA-Z0-9]$
+	// Pattern: ^[a-zA-Z0-9][a-zA-Z0-9@.!#$+-=^_~;]{1,126}[a-zA-Z0-9]$
 	Username *string `json:"username"`
 }
 
@@ -65,7 +65,7 @@ func (m *UserCreationRequest) validateUsername(formats strfmt.Registry) error {
 		return err
 	}
 
-	if err := validate.Pattern("username", "body", string(*m.Username), `^[a-zA-Z0-9][a-zA-Z0-9_-]{1,126}[a-zA-Z0-9]$`); err != nil {
+	if err := validate.Pattern("username", "body", string(*m.Username), `^[a-zA-Z0-9][a-zA-Z0-9@.!#$+-=^_~;]{1,126}[a-zA-Z0-9]$`); err != nil {
 		return err
 	}
 

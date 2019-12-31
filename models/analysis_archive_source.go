@@ -8,7 +8,9 @@ package models
 import (
 	strfmt "github.com/go-openapi/strfmt"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // AnalysisArchiveSource An image reference in the analysis archive for the purposes of loading analysis from the archive into th working set
@@ -16,11 +18,35 @@ import (
 type AnalysisArchiveSource struct {
 
 	// The image digest identify the analysis. Archived analyses are based on digest, tag records are restored as analysis is restored.
-	Digest string `json:"digest,omitempty"`
+	// Required: true
+	// Pattern: ^sha256:[a-fA-F0-9]{64}$
+	Digest *string `json:"digest"`
 }
 
 // Validate validates this analysis archive source
 func (m *AnalysisArchiveSource) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateDigest(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *AnalysisArchiveSource) validateDigest(formats strfmt.Registry) error {
+
+	if err := validate.Required("digest", "body", m.Digest); err != nil {
+		return err
+	}
+
+	if err := validate.Pattern("digest", "body", string(*m.Digest), `^sha256:[a-fA-F0-9]{64}$`); err != nil {
+		return err
+	}
+
 	return nil
 }
 

@@ -18,17 +18,21 @@ import (
 type RegistryDigestSource struct {
 
 	// Optional override of the image creation time to support proper tag history construction in cases of out-of-order analysis compared to registry history for the tag
+	// Required: true
 	// Format: date-time
-	CreationTimestampOverride strfmt.DateTime `json:"creation_timestamp_override,omitempty"`
+	CreationTimestampOverride *strfmt.DateTime `json:"creation_timestamp_override"`
 
-	// Content of the dockerfile used to build the image, if available.
+	// Base64 encoded content of the dockerfile used to build the image, if available.
+	// Pattern: ^[a-zA-Z0-9+/=]+$
 	Dockerfile string `json:"dockerfile,omitempty"`
 
 	// A digest-based pullstring (e.g. docker.io/nginx@sha256:123abc)
-	Pullstring string `json:"pullstring,omitempty"`
+	// Required: true
+	Pullstring *string `json:"pullstring"`
 
 	// A docker pull string (e.g. docker.io/nginx:latest, or docker.io/nginx@sha256:abd) to retrieve the image
-	Tag string `json:"tag,omitempty"`
+	// Required: true
+	Tag *string `json:"tag"`
 }
 
 // Validate validates this registry digest source
@@ -36,6 +40,18 @@ func (m *RegistryDigestSource) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateCreationTimestampOverride(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateDockerfile(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validatePullstring(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateTag(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -47,11 +63,42 @@ func (m *RegistryDigestSource) Validate(formats strfmt.Registry) error {
 
 func (m *RegistryDigestSource) validateCreationTimestampOverride(formats strfmt.Registry) error {
 
-	if swag.IsZero(m.CreationTimestampOverride) { // not required
-		return nil
+	if err := validate.Required("creation_timestamp_override", "body", m.CreationTimestampOverride); err != nil {
+		return err
 	}
 
 	if err := validate.FormatOf("creation_timestamp_override", "body", "date-time", m.CreationTimestampOverride.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *RegistryDigestSource) validateDockerfile(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Dockerfile) { // not required
+		return nil
+	}
+
+	if err := validate.Pattern("dockerfile", "body", string(m.Dockerfile), `^[a-zA-Z0-9+/=]+$`); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *RegistryDigestSource) validatePullstring(formats strfmt.Registry) error {
+
+	if err := validate.Required("pullstring", "body", m.Pullstring); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *RegistryDigestSource) validateTag(formats strfmt.Registry) error {
+
+	if err := validate.Required("tag", "body", m.Tag); err != nil {
 		return err
 	}
 

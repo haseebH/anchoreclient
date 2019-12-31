@@ -24,10 +24,11 @@ type ImageAnalysisRequest struct {
 	// Format: date-time
 	CreatedAt strfmt.DateTime `json:"created_at,omitempty"`
 
-	// A full pullable digest reference for an image. e.g. docker.io/nginx@sha256:abc123. Deprecated in favor of the 'source' field
+	// A digest string for an image, maybe a pull string or just a digest. e.g. nginx@sha256:123 or sha256:abc123. If a pull string, it must have same regisry/repo as the tag field. Deprecated in favor of the 'source' field
 	Digest string `json:"digest,omitempty"`
 
-	// Content of the dockerfile for the image, if available. Deprecated in favor of the 'source' field.
+	// Base64 encoded content of the dockerfile for the image, if available. Deprecated in favor of the 'source' field.
+	// Pattern: ^[a-zA-Z0-9+/=]+$
 	Dockerfile string `json:"dockerfile,omitempty"`
 
 	// Optional. The type of image this is adding, defaults to "docker". This can be ommitted until multiple image types are supported.
@@ -48,6 +49,10 @@ func (m *ImageAnalysisRequest) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateDockerfile(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateSource(formats); err != nil {
 		res = append(res, err)
 	}
@@ -65,6 +70,19 @@ func (m *ImageAnalysisRequest) validateCreatedAt(formats strfmt.Registry) error 
 	}
 
 	if err := validate.FormatOf("created_at", "body", "date-time", m.CreatedAt.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *ImageAnalysisRequest) validateDockerfile(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Dockerfile) { // not required
+		return nil
+	}
+
+	if err := validate.Pattern("dockerfile", "body", string(m.Dockerfile), `^[a-zA-Z0-9+/=]+$`); err != nil {
 		return err
 	}
 

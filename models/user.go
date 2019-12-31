@@ -27,6 +27,9 @@ type User struct {
 	// Format: date-time
 	LastUpdated strfmt.DateTime `json:"last_updated,omitempty"`
 
+	// If the user is external, this is the source that the user was initialized from. All other user types have this set to null
+	Source string `json:"source,omitempty"`
+
 	// The user's type
 	// Enum: [native internal external]
 	Type string `json:"type,omitempty"`
