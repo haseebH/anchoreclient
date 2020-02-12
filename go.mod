@@ -6,7 +6,6 @@ require (
 	github.com/agnivade/levenshtein v1.0.3 // indirect
 	github.com/creack/pty v1.1.9 // indirect
 	github.com/dgryski/trifles v0.0.0-20191129005055-5a6159895336 // indirect
-	github.com/globalsign/mgo v0.0.0-20181015135952-eeefdecb41b8 // indirect
 	github.com/go-openapi/analysis v0.19.7 // indirect
 	github.com/go-openapi/errors v0.19.3
 	github.com/go-openapi/runtime v0.19.9
